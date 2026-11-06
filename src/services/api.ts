@@ -69,18 +69,25 @@ export function watchSession(onChange: (userId: string | null) => void): void {
   });
 }
 
-/** Sign-in providers the app offers, in the order shown. */
+/** Sign-in providers the app offers as buttons, in the order shown. */
 export const PROVIDERS = ["google", "github"] as const;
 
 export type Provider = (typeof PROVIDERS)[number];
 
+/** The ways to sign in that are switched on in the Supabase dashboard. */
+export interface SignInMethods {
+  /** Emailed one-time codes. */
+  email: boolean;
+  providers: Provider[];
+}
+
 /**
- * The providers switched on in the Supabase dashboard, so the sign-in screen
- * never offers a button that cannot work.
+ * Reads which sign-in methods are switched on, so the sign-in screen never
+ * offers one that cannot work.
  *
  * Errors: throws when Supabase cannot be reached.
  */
-export async function enabledProviders(): Promise<Provider[]> {
+export async function signInMethods(): Promise<SignInMethods> {
   const res = await fetch(`${url}/auth/v1/settings`, {
     headers: { apikey: key ?? "" },
   });
@@ -88,7 +95,42 @@ export async function enabledProviders(): Promise<Provider[]> {
     throw new Error(`Supabase answered HTTP ${res.status}.`);
   }
   const settings: { external?: Record<string, boolean> } = await res.json();
-  return PROVIDERS.filter((p) => settings.external?.[p] === true);
+  return {
+    email: settings.external?.email === true,
+    providers: PROVIDERS.filter((p) => settings.external?.[p] === true),
+  };
+}
+
+/**
+ * Emails a one-time sign-in code, creating the account on first use.
+ *
+ * Errors: throws with Supabase's message, for example when emails are being
+ * sent too often.
+ */
+export async function sendEmailCode(email: string): Promise<void> {
+  const { error } = await db().auth.signInWithOtp({ email });
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+/**
+ * Signs in with an emailed code; the session listener then takes over.
+ *
+ * Errors: throws when the code is wrong or has expired.
+ */
+export async function verifyEmailCode(
+  email: string,
+  code: string,
+): Promise<void> {
+  const { error } = await db().auth.verifyOtp({
+    email,
+    token: code,
+    type: "email",
+  });
+  if (error) {
+    throw new Error(error.message);
+  }
 }
 
 /** Sends the browser to `provider`; it comes back to this page signed in. */
