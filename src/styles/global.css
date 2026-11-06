@@ -1,0 +1,257 @@
+/**
+ * Global base styles, the ambient background, and the shared primitives:
+ * buttons, form fields, and the floating round glass button.
+ *
+ * Component-specific styling stays scoped in each `.svelte` file.
+ */
+
+@import "./variables.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* An open dialog freezes the page behind it, which dialog alone does not. */
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  background: var(--color-bg-radial), var(--color-bg-base);
+  background-attachment: fixed;
+  color: var(--color-text-main);
+  font-family: var(--font-family-sans);
+  letter-spacing: -0.011em;
+  line-height: 1.4;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/*
+ * Soft color orbs behind everything. Painted gradients rather than blur
+ * filters, so they cost nothing after the first paint.
+ */
+body::before,
+body::after {
+  border-radius: 50%;
+  content: "";
+  height: 70vmax;
+  pointer-events: none;
+  position: fixed;
+  width: 70vmax;
+  z-index: -1;
+}
+
+body::before {
+  background: radial-gradient(
+    circle,
+    rgb(165 180 252 / 45%) 0%,
+    rgb(165 180 252 / 0%) 65%
+  );
+  left: -30vmax;
+  top: -25vmax;
+}
+
+body::after {
+  background: radial-gradient(
+    circle,
+    rgb(251 207 232 / 50%) 0%,
+    rgb(251 207 232 / 0%) 65%
+  );
+  bottom: -30vmax;
+  right: -30vmax;
+}
+
+/* The ambient glow's color; registered so it can transition. */
+@property --ambient {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #a5b4fc;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+textarea {
+  color: inherit;
+  font: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+  outline-offset: 2px;
+}
+
+/* Buttons ------------------------------------------------------------- */
+
+.btn {
+  align-items: center;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  font-size: 0.9rem;
+  font-weight: 600;
+  gap: 8px;
+  justify-content: center;
+  padding: 11px 18px;
+  transition:
+    transform 0.4s var(--ease-spring),
+    opacity 0.15s ease;
+}
+
+@media (hover: hover) {
+  .btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  .round-button:hover {
+    background: #fff;
+    color: var(--color-text-main);
+  }
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.96);
+  transition-duration: 80ms;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+}
+
+.btn-primary {
+  background: var(--color-text-main);
+  color: #fff;
+}
+
+.btn-accent {
+  background: var(--tint, var(--color-text-main));
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--tint, #000) 35%, transparent);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: var(--glass-surface-pill);
+  border: 1px solid var(--glass-border-subtle);
+  color: var(--color-text-main);
+}
+
+.btn-quiet {
+  color: var(--color-text-muted);
+  padding: 8px 10px;
+}
+
+.btn-danger {
+  color: var(--color-danger);
+}
+
+/* Floating round glass button (settings, new card). */
+.round-button {
+  align-items: center;
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  background: var(--glass-surface-pill);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
+  box-shadow: var(--glass-shadow-sm);
+  color: var(--color-text-muted);
+  display: inline-flex;
+  height: 42px;
+  justify-content: center;
+  transition: transform 0.4s var(--ease-spring);
+  width: 42px;
+}
+
+.round-button:active {
+  transform: scale(0.9);
+  transition-duration: 80ms;
+}
+
+/* Forms --------------------------------------------------------------- */
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field > label,
+.field-label {
+  color: var(--color-text-main);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.input {
+  background: var(--glass-surface-pill);
+  border: 1px solid var(--glass-border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  outline: none;
+  padding: 11px 14px;
+  transition: border-color 0.15s ease;
+  width: 100%;
+}
+
+.input:focus {
+  border-color: var(--color-text-light);
+}
+
+.input::placeholder {
+  color: var(--color-text-light);
+}
+
+.field-hint {
+  color: var(--color-text-light);
+  font-size: 0.78rem;
+}
+
+.field-error {
+  color: var(--color-danger);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.visually-hidden {
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms;
+    animation-iteration-count: 1;
+    transition-duration: 1ms;
+  }
+}

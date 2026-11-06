@@ -1,0 +1,3 @@
+# Supabase CLI settings. Only `db push` in CI uses the CLI; the remaining
+# options keep their defaults.
+project_id = "stamp"
