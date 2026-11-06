@@ -1,0 +1,30 @@
+<!--
+  Supabase "Magic Link" email: sent on every sign-in after the first.
+  Subject: Your stamp sign-in code
+
+  Paste into Authentication → Emails → Magic Link. Styles are inline on
+  purpose: most email apps strip <style> blocks and external CSS.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f1effc; padding: 32px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width: 420px; background-color: #ffffff; border-radius: 24px; padding: 32px 28px;">
+        <tr>
+          <td align="center" style="padding-bottom: 20px;">
+            <span style="display: inline-block; background-color: #5a4fcf; color: #ffffff; border-radius: 14px; width: 48px; height: 48px; line-height: 48px; font-size: 24px; text-align: center;">✦</span>
+            <p style="margin: 10px 0 0; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #0f172a;">stamp</p>
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <p style="margin: 0 0 6px; font-size: 16px; color: #0f172a;">Here's your code to sign in:</p>
+            <p style="margin: 0 0 20px; font-size: 34px; font-weight: 700; letter-spacing: 8px; color: #5a4fcf;">{{ .Token }}</p>
+            <a href="{{ .ConfirmationURL }}" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 600; padding: 12px 22px; border-radius: 12px;">open stamp</a>
+            <p style="margin: 20px 0 0; font-size: 13px; line-height: 1.5; color: #64748b;">Type the code into stamp, or tap the button on the device you're signing in on. It works for one hour.</p>
+          </td>
+        </tr>
+      </table>
+      <p style="margin: 16px 0 0; font-size: 12px; color: #94a3b8;">Didn't try to sign in? You can ignore this email.</p>
+    </td>
+  </tr>
+</table>
