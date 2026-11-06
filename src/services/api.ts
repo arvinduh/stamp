@@ -108,7 +108,11 @@ export async function signInMethods(): Promise<SignInMethods> {
  * sent too often.
  */
 export async function sendEmailCode(email: string): Promise<void> {
-  const { error } = await db().auth.signInWithOtp({ email });
+  const { error } = await db().auth.signInWithOtp({
+    email,
+    // Where the email's link (if the template still has one) comes back to.
+    options: { emailRedirectTo: location.origin + location.pathname },
+  });
   if (error) {
     throw new Error(error.message);
   }
