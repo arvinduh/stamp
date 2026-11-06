@@ -60,13 +60,17 @@ lock so two people tapping at once cannot corrupt a stack. See
 2. Put the project URL and publishable key (**Project Settings → API Keys**) in
    `.env.local`.
 3. Set up email codes, the default sign-in:
-   - In **Authentication → Emails**, make the **Magic Link** and **Confirm
-     signup** templates show the code: put `{{ .Token }}` in each body in place
-     of the link.
+   - In **Authentication → Emails**, replace the **Confirm signup** and **Magic
+     Link** templates with
+     [confirm_signup.html](supabase/templates/confirm_signup.html) and
+     [magic_link.html](supabase/templates/magic_link.html), using the subject
+     written at the top of each. They show the code, plus a button for people
+     who would rather tap.
    - Supabase's built-in mailer only sends to the project's team, a few times an
-     hour. For everyone else, add a mail sender under **Authentication → SMTP
-     Settings**, for example Brevo's free tier (verify your own address as the
-     sender) or a Gmail app password.
+     hour, as "Supabase Auth". For everyone else, add a mail sender under
+     **Authentication → SMTP Settings** with the sender name `stamp`, for
+     example Brevo's free tier (verify your own address as the sender) or a
+     Gmail app password.
 4. Optionally turn on Google or GitHub; the sign-in screen shows whichever are
    on. The callback URL for both is
    `https://<project-ref>.supabase.co/auth/v1/callback`.
