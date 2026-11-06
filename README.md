@@ -12,8 +12,8 @@ cp .env.example .env.local # then fill in your Supabase URL and key
 npm run dev
 ```
 
-Open `http://localhost:5173` and sign in with Google. Setting up the Supabase
-project and Google sign-in is a one-time step; see
+Open `http://localhost:5173` and sign in with an emailed code. Setting up the
+Supabase project is a one-time step; see
 [Set up the backend](#set-up-the-backend).
 
 ```bash
@@ -39,8 +39,9 @@ npm run build   # static site in dist/
 
 ## Sharing and accounts
 
-- Everyone signs in with Google, so each person has a unique account on every
-  device. Display names are just labels and may repeat.
+- People sign in with a one-time code sent to their email (no password), or with
+  Google or GitHub where those are switched on. Each person has one account on
+  every device; display names are just labels and may repeat.
 - A card's owner can edit, delete, and share it. **Invite link** in the card
   editor makes a link that lets anyone who opens it join for 14 days; **turn off
   old links** stops every link sent so far. Owners can also remove people.
@@ -58,17 +59,26 @@ lock so two people tapping at once cannot corrupt a stack. See
    API on and automatic table exposure off.
 2. Put the project URL and publishable key (**Project Settings → API Keys**) in
    `.env.local`.
-3. Turn on at least one sign-in provider; the sign-in screen shows whichever are
+3. Set up email codes, the default sign-in:
+   - In **Authentication → Emails**, make the **Magic Link** and **Confirm
+     signup** templates show the code: put `{{ .Token }}` in each body in place
+     of the link.
+   - Supabase's built-in mailer only sends to the project's team, a few times an
+     hour. For everyone else, add a mail sender under **Authentication → SMTP
+     Settings**, for example Brevo's free tier (verify your own address as the
+     sender) or a Gmail app password.
+4. Optionally turn on Google or GitHub; the sign-in screen shows whichever are
    on. The callback URL for both is
    `https://<project-ref>.supabase.co/auth/v1/callback`.
-   - **GitHub:** GitHub → Settings → Developer settings → OAuth Apps → New OAuth
-     App, with that callback URL. Paste the client ID and a new client secret
-     into Supabase → **Authentication → Sign In / Providers → GitHub**.
    - **Google:** in [Google Cloud Console](https://console.cloud.google.com),
      create a **Web application** OAuth client with that redirect URI (no
-     billing needed), publish the consent screen, and paste the client ID and
-     secret into the Google provider.
-4. In **Authentication → URL Configuration**, set the site URL to where the app
+     billing or free trial needed), publish the consent screen, and paste the
+     client ID and secret into **Authentication → Sign In / Providers →
+     Google**.
+   - **GitHub:** GitHub → Settings → Developer settings → OAuth Apps → New OAuth
+     App, with that callback URL; paste the client ID and secret into the GitHub
+     provider.
+5. In **Authentication → URL Configuration**, set the site URL to where the app
    is hosted and add `http://localhost:5173/**` to the redirect URLs.
 
 Free Supabase projects pause after about a week without use; the next visit
