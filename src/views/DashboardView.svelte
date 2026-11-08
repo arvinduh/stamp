@@ -525,10 +525,11 @@
     color={stack.card.color}
     canRemove={record.cardInstance === stack.current.instance &&
       !stack.current.redemption}
-    onSaveNote={(note) => store.saveNote(record, note)}
-    onRemove={() => {
+    onSaveNote={(target, note) => store.saveNote(target, note)}
+    onRemove={(target) => {
+      // Unstamp first: clearing `inspecting` empties `stack` and `record`.
+      store.unstamp(stack, target.slotIndex);
       inspecting = null;
-      store.unstamp(stack, record.slotIndex);
     }}
     onClose={() => (inspecting = null)}
   />
@@ -652,6 +653,7 @@
         transparent 70%
       );
     inset: 0;
+    mask-image: var(--edge-fade);
     pointer-events: none;
     position: fixed;
     transition: --ambient 0.9s ease;
