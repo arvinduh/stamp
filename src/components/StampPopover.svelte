@@ -17,17 +17,29 @@
   interface Props {
     /** The stamp the popover hangs from. */
     anchor: HTMLElement;
+    /** Read once on open; later changes are ignored. */
     stamp: StampRecord;
     color: string;
     /** False on cards that no longer take changes. */
     canRemove: boolean;
-    onSaveNote: (note: string) => void;
-    onRemove: () => void;
+    onSaveNote: (stamp: StampRecord, note: string) => void;
+    onRemove: (stamp: StampRecord) => void;
     onClose: () => void;
   }
 
-  let { anchor, stamp, color, canRemove, onSaveNote, onRemove, onClose }: Props =
-    $props();
+  let {
+    anchor,
+    stamp: initial,
+    color,
+    canRemove,
+    onSaveNote,
+    onRemove,
+    onClose,
+  }: Props = $props();
+
+  // Pinned at open: tapping another stamp swaps the prop before this popover
+  // closes, and its draft must still be saved to the stamp it was typed on.
+  const stamp = untrack(() => initial);
 
   const WIDTH = 264;
   const GAP = 8;
@@ -37,7 +49,7 @@
   let top = $state(0);
   let left = $state(0);
   // Seeded once; a sync while open must not clobber typing.
-  let draft = $state(untrack(() => stamp.note));
+  let draft = $state(stamp.note);
   let removed = false;
 
   onMount(() => {
@@ -60,14 +72,14 @@
       return;
     }
     if (!removed && draft.trim() !== stamp.note) {
-      onSaveNote(draft.trim());
+      onSaveNote(stamp, draft.trim());
     }
     onClose();
   }
 
   function remove() {
     removed = true;
-    onRemove();
+    onRemove(stamp);
     panel.hidePopover();
   }
 </script>
