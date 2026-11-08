@@ -38,7 +38,6 @@ body {
 }
 
 /*
- * Soft color orbs behind everything. Painted gradien/*
  * The backdrop: a top glow and two soft color orbs, painted gradients rather
  * than blur filters, so they cost nothing after the first paint.
  *
@@ -67,7 +66,7 @@ body::before {
   z-index: -1;
 }
 
-tion. */
+/* The ambient glow's color; registered so it can transition. */
 @property --ambient {
   syntax: "<color>";
   inherits: false;
