@@ -527,8 +527,9 @@
       !stack.current.redemption}
     onSaveNote={(note) => store.saveNote(record, note)}
     onRemove={() => {
-      inspecting = null;
+      // Unstamp first: clearing `inspecting` empties `stack` and `record`.
       store.unstamp(stack, record.slotIndex);
+      inspecting = null;
     }}
     onClose={() => (inspecting = null)}
   />
