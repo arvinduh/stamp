@@ -27,8 +27,7 @@ html:has(dialog[open]) {
 
 body {
   -webkit-font-smoothing: antialiased;
-  background: var(--color-bg-radial), var(--color-bg-base);
-  background-attachment: fixed;
+  background: var(--color-bg-base);
   color: var(--color-text-main);
   font-family: var(--font-family-sans);
   letter-spacing: -0.011em;
@@ -40,8 +39,12 @@ body {
 
 /*
  * Soft color orbs behind everything. Painted gradien/*
- * Soft color orbs behind everything. Painted gradients rather than blur
- * filters, so they cost nothing after the first paint.
+ * The backdrop: a top glow and two soft color orbs, painted gradients rather
+ * than blur filters, so they cost nothing after the first paint.
+ *
+ * iOS Safari fills the strips behind its status bar and toolbar with the
+ * page's plain background color, not fixed layers. Fading the backdrop out
+ * at both edges lands it on that same color, so the bars show no seam.
  */
 body::before {
   background:
@@ -54,9 +57,11 @@ body::before {
       circle 32vmax at calc(100% - 5vmax) calc(100% - 5vmax),
       rgb(251 207 232 / 50%),
       rgb(251 207 232 / 0%)
-    );
+    ),
+    var(--color-bg-radial);
   content: "";
   inset: 0;
+  mask-image: var(--edge-fade);
   pointer-events: none;
   position: fixed;
   z-index: -1;
