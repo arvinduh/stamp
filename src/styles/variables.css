@@ -8,6 +8,13 @@
 
 :root {
   --color-bg-base: #f1f5f9;
+  /* Fades fixed backdrop layers to `--color-bg-base` at the screen edges. */
+  --edge-fade: linear-gradient(
+    transparent,
+    #000 64px,
+    #000 calc(100% - 64px),
+    transparent
+  );
   --color-bg-radial: radial-gradient(
     circle at 50% 0%,
     #e0e7ff 0%,

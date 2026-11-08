@@ -653,6 +653,7 @@
         transparent 70%
       );
     inset: 0;
+    mask-image: var(--edge-fade);
     pointer-events: none;
     position: fixed;
     transition: --ambient 0.9s ease;
